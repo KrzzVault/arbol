@@ -80,6 +80,31 @@ class NaryTree {
     resetTree() {
         this.root = null;
     }
+
+    // Función para eliminar un nodo y su subárbol
+    deleteNode(value) {
+        if (this.root === null) return null;
+
+        // Si el nodo a eliminar es la raíz
+        if (this.root.data === value) {
+            this.root = null;
+            return true;
+        }
+
+        const queue = [this.root];
+        while (queue.length > 0) {
+            const current = queue.shift();
+            for (let i = 0; i < current.children.length; i++) {
+                if (current.children[i].data === value) {
+                    current.children.splice(i, 1); // Eliminar el nodo y sus hijos
+                    return true;
+                }
+                queue.push(current.children[i]);
+            }
+        }
+
+        return false; // Nodo no encontrado
+    }
 }
 
 // Crear la instancia del árbol
@@ -207,9 +232,9 @@ document.getElementById('loadRandomNodesButton').addEventListener('click', () =>
 document.getElementById('deleteNodeButton').addEventListener('click', () => {
     const value = parseInt(prompt("Ingrese el valor del nodo a eliminar:"));
     if (!isNaN(value)) {
-        const result = deleteNode(tree.root, value);
+        const result = tree.deleteNode(value);
         if (result) {
-            document.getElementById('result').textContent = `Nodo ${value} eliminado.`;
+            document.getElementById('result').textContent = `Nodo ${value} eliminado junto con sus hijos.`;
         } else {
             document.getElementById('result').textContent = `Nodo ${value} no encontrado.`;
         }
@@ -218,17 +243,3 @@ document.getElementById('deleteNodeButton').addEventListener('click', () => {
         document.getElementById('result').textContent = 'Ingrese un valor válido.';
     }
 });
-
-// Función para eliminar un nodo en el árbol
-function deleteNode(node, value) {
-    if (!node) return null;
-    if (node.data === value) {
-        node.data = null; // O puedes manejar la eliminación según tu lógica
-        return node;
-    }
-    for (const child of node.children) {
-        const result = deleteNode(child, value);
-        if (result) return result;
-    }
-    return null;
-}
