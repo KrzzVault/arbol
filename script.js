@@ -1,12 +1,15 @@
+// Variables configurables para el número de hijos
+const maxRootChildren = 6; // Máximo de hijos para la raíz
+const maxOtherNodeChildren = 4; // Máximo de hijos para los demás nodos
+
 class Node {
     constructor(data) {
         this.data = data;
-        this.left = null;
-        this.right = null;
+        this.children = [];
     }
 }
 
-class BinaryTree {
+class NaryTree {
     constructor() {
         this.root = null;
     }
@@ -22,27 +25,27 @@ class BinaryTree {
         while (queue.length > 0) {
             const current = queue.shift();
 
-            if (current.left === null) {
-                current.left = newNode;
-                return;
-            } else {
-                queue.push(current.left);
-            }
+            // Ordenar los hijos antes de intentar la inserción
+            current.children.sort((a, b) => a.data - b.data);
 
-            if (current.right === null) {
-                current.right = newNode;
+            // Determinar el número máximo de hijos basado en el nivel
+            const maxChildren = current === this.root ? maxRootChildren : getRandomChildrenCount(maxOtherNodeChildren);
+
+            if (current.children.length < maxChildren) {
+                current.children.push(newNode);
+                current.children.sort((a, b) => a.data - b.data); // Mantener orden después de la inserción
                 return;
             } else {
-                queue.push(current.right);
+                // Si el nodo tiene el máximo de hijos, agregamos sus hijos a la cola
+                queue.push(...current.children);
             }
         }
     }
 
     inorder(node, arr = []) {
         if (node !== null) {
-            this.inorder(node.left, arr);
+            node.children.forEach(child => this.inorder(child, arr));
             arr.push(node.data);
-            this.inorder(node.right, arr);
         }
         return arr;
     }
@@ -50,16 +53,14 @@ class BinaryTree {
     preorder(node, arr = []) {
         if (node !== null) {
             arr.push(node.data);
-            this.preorder(node.left, arr);
-            this.preorder(node.right, arr);
+            node.children.forEach(child => this.preorder(child, arr));
         }
         return arr;
     }
 
     postorder(node, arr = []) {
         if (node !== null) {
-            this.postorder(node.left, arr);
-            this.postorder(node.right, arr);
+            node.children.forEach(child => this.postorder(child, arr));
             arr.push(node.data);
         }
         return arr;
@@ -71,8 +72,7 @@ class BinaryTree {
         while (queue.length > 0) {
             const current = queue.shift();
             arr.push(current.data);
-            if (current.left) queue.push(current.left);
-            if (current.right) queue.push(current.right);
+            queue.push(...current.children);
         }
         return arr;
     }
@@ -83,14 +83,15 @@ class BinaryTree {
 }
 
 // Crear la instancia del árbol
-const tree = new BinaryTree();
+const tree = new NaryTree();
 
-// Añadir los event listeners para los botones
+// Event listeners para los botones
 document.getElementById('insertNodeButton').addEventListener('click', () => {
     const value = parseInt(prompt("Ingrese un valor para el nodo:"));
     if (!isNaN(value)) {
         tree.insertNode(value);
         document.getElementById('result').textContent = `Nodo ${value} insertado.`;
+        renderTreeD3(tree.root); // Renderizar el árbol después de la inserción
     } else {
         document.getElementById('result').textContent = 'Ingrese un valor válido.';
     }
@@ -119,34 +120,12 @@ document.getElementById('showLevelOrderButton').addEventListener('click', () => 
 document.getElementById('resetTreeButton').addEventListener('click', () => {
     tree.resetTree();
     document.getElementById('result').textContent = 'El árbol ha sido reiniciado.';
+    d3.select("#treeContainer").html(""); // Limpiar la renderización del árbol
 });
 
 document.getElementById('renderTreeButton').addEventListener('click', () => {
     renderTreeD3(tree.root);
 });
-
-// Añadir event listener para el botón de búsqueda
-document.getElementById('searchNodeButton').addEventListener('click', () => {
-    const value = parseInt(prompt("Ingrese el valor del nodo a buscar:"));
-    if (!isNaN(value)) {
-        const result = searchNode(tree.root, value);
-        if (result) {
-            document.getElementById('result').textContent = `Nodo ${value} encontrado.`;
-        } else {
-            document.getElementById('result').textContent = `Nodo ${value} no encontrado.`;
-        }
-    } else {
-        document.getElementById('result').textContent = 'Ingrese un valor válido.';
-    }
-});
-
-// Función para buscar un nodo en el árbol
-function searchNode(node, value) {
-    if (!node) return null;
-    if (node.data === value) return node;
-    return searchNode(node.left, value) || searchNode(node.right, value);
-}
-
 
 // Función para renderizar el árbol utilizando D3.js
 function renderTreeD3(root) {
@@ -196,6 +175,60 @@ function buildTreeData(node) {
     if (!node) return null;
     return {
         name: node.data,
-        children: [buildTreeData(node.left), buildTreeData(node.right)].filter(n => n !== null)
+        children: node.children.map(child => buildTreeData(child))
     };
+}
+
+// Función para generar números aleatorios únicos
+function generateUniqueRandomNumbers(count, min, max) {
+    const numbers = new Set();
+    while (numbers.size < count) {
+        const num = Math.floor(Math.random() * (max - min + 1)) + min;
+        numbers.add(num);
+    }
+    return Array.from(numbers);
+}
+
+// Generar un número aleatorio de hijos entre 0 y el máximo permitido
+function getRandomChildrenCount(max) {
+    return Math.floor(Math.random() * (max + 1));
+}
+
+// Añadir el event listener para el botón de cargar nodos aleatorios
+document.getElementById('loadRandomNodesButton').addEventListener('click', () => {
+    tree.resetTree(); // Reiniciar el árbol antes de insertar los nodos aleatorios
+    const randomNumbers = generateUniqueRandomNumbers(15, 1, 99);
+    randomNumbers.forEach(num => tree.insertNode(num));
+    document.getElementById('result').textContent = `15 nodos aleatorios insertados: ${randomNumbers.join(', ')}`;
+    renderTreeD3(tree.root); // Renderizar el árbol después de insertar los nodos
+});
+
+// Añadir el event listener para eliminar un nodo
+document.getElementById('deleteNodeButton').addEventListener('click', () => {
+    const value = parseInt(prompt("Ingrese el valor del nodo a eliminar:"));
+    if (!isNaN(value)) {
+        const result = deleteNode(tree.root, value);
+        if (result) {
+            document.getElementById('result').textContent = `Nodo ${value} eliminado.`;
+        } else {
+            document.getElementById('result').textContent = `Nodo ${value} no encontrado.`;
+        }
+        renderTreeD3(tree.root); // Renderizar el árbol después de eliminar el nodo
+    } else {
+        document.getElementById('result').textContent = 'Ingrese un valor válido.';
+    }
+});
+
+// Función para eliminar un nodo en el árbol
+function deleteNode(node, value) {
+    if (!node) return null;
+    if (node.data === value) {
+        node.data = null; // O puedes manejar la eliminación según tu lógica
+        return node;
+    }
+    for (const child of node.children) {
+        const result = deleteNode(child, value);
+        if (result) return result;
+    }
+    return null;
 }
