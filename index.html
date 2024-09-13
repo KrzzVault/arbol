@@ -1,36 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binary Tree Visualization with D3.js</title>
+    <title>Árbol Binario con 6 Hijos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <div class="header">
+        <h1>Árbol Binario con 6 Hijos</h1>
+
+        <!-- Apartado para el nombre de la clase y alumnos -->
+        <section>
+            <h2>Información del Curso</h2>
+            <p><strong>Clase:</strong> Traductores e Interpretes I</p>
+            <p><strong>Catedratico:</strong> Ing. Dagoberto Amador López</p>
+            <p><strong>Alumnos:</strong><br>
+                Lennir Nazareth Sanchez Padilla<br>
+                Cristian Samuel López Villatoro<br>
+                Junior Eduardo Rodriguez Mendoza
+            </p>
+            </ul>
+        </section>
+    </div>
+
     <div class="container">
-        <button id="insertNodeButton">Insertar Nodo</button>
-        <button id="showInorderButton">Mostrar Inorden</button>
-        <button id="showPreorderButton">Mostrar Preorden</button>
-        <button id="showPostorderButton">Mostrar Postorden</button>
-        <button id="showLevelOrderButton">Mostrar Nivel por Nivel</button>
-        <button id="searchNodeButton">Buscar Nodo</button>
-        <button id="resetTreeButton">Reiniciar Árbol</button>
-        <button id="renderTreeButton">Renderizar Árbol</button>
-        <button id="loadRandomNodesButton">Cargar Nodos Aleatorios</button> <!-- Nuevo botón -->
-        <button id="deleteNodeButton">Eliminar Nodo</button>
-
-
-        <!-- Botones adicionales para los tipos de árboles -->
-        <!-- <button id="showCompleteTreeButton">Mostrar Árbol Completo</button>
-        <button id="showFullTreeButton">Mostrar Árbol Lleno</button>
-        <button id="showDegenerateTreeButton">Mostrar Árbol Degenerado</button> -->
+        <!-- Contenedor para los botones -->
+        <div class="button-container">
+            <button id="insertNodeButton">Insertar Nodo</button>
+            <button id="showInorderButton">Mostrar Inorden</button>
+            <button id="showPreorderButton">Mostrar Preorden</button>
+            <button id="showPostorderButton">Mostrar Postorden</button>
+            <button id="showLevelOrderButton">Mostrar Nivel por Nivel</button>
+            <button id="searchNodeButton">Buscar Nodo</button>
+            <button id="resetTreeButton">Reiniciar Árbol</button>
+            <button id="renderTreeButton">Renderizar Árbol</button>
+            <button id="loadRandomNodesButton">Cargar Nodos Aleatorios</button>
+            <button id="deleteNodeButton">Eliminar Nodo</button>
+        </div>
 
         <div id="result"></div>
         <div id="treeContainer"></div>
     </div>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <script src="d3.v7.min.js"></script>
     <script src="script.js"></script>
 </body>
 

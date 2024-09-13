@@ -1,17 +1,36 @@
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .container {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Permite que los botones se ajusten en varias líneas si es necesario */
+    justify-content: center;
+    gap: 10px;
+    /* Espacio entre los botones */
+    margin-bottom: 20px;
+    max-width: 100%;
+    /* Para que no se salga del área visible */
+}
+
+/* Estilo general de los botones */
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -19,6 +38,7 @@ button {
     margin: 5px;
 }
 
+/* Estilo del contenedor del árbol */
 #treeContainer {
     margin-top: 20px;
     border: 1px solid #ccc;
@@ -26,19 +46,60 @@ button {
     height: 500px;
 }
 
+/* Estilo de los nodos */
 .node circle {
     fill: #4682b4;
     stroke: #4682b4;
     stroke-width: 3px;
 }
 
+/* Estilo del texto dentro de los nodos */
 .node text {
-    font: 12px sans-serif;
+    font: 17px sans-serif;
     fill: white;
+    font-weight: bold;
+    /* Estilo de texto en negrita */
 }
 
+/* Estilo de las líneas */
 .link {
     fill: none;
-    stroke: #ccc;
-    stroke-width: 2px;
+    stroke: #888;
+    /* Color de la línea */
+    stroke-width: 2.5px;
+    /* Grosor de la línea */
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+    .button-container {
+        flex-direction: column;
+        /* Los botones se apilarán verticalmente */
+        align-items: center;
+    }
+
+    button {
+        width: 100%;
+        /* Los botones ocuparán todo el ancho disponible */
+        max-width: 200px;
+        /* Tamaño máximo de los botones */
+    }
+
+    #treeContainer {
+        height: 300px;
+        /* Ajusta la altura del contenedor del árbol para pantallas más pequeñas */
+    }
+}
+
+/* Media query para pantallas grandes */
+@media (min-width: 1200px) {
+    .button-container {
+        flex-direction: row;
+        /* Los botones se mostrarán en una fila */
+    }
+
+    button {
+        width: auto;
+        /* Ancho automático para botones en pantallas grandes */
+    }
 }
