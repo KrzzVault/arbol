@@ -266,3 +266,33 @@ document.getElementById('deleteNodeButton').addEventListener('click', () => {
 function getRandomChildrenCount(maxChildren) {
     return Math.floor(Math.random() * (maxChildren + 1)); // Generar número entre 0 y maxChildren
 }
+
+// Añadir event listener para el botón de búsqueda
+document.getElementById('searchNodeButton').addEventListener('click', () => {
+    const value = parseInt(prompt("Ingrese el valor del nodo a buscar:"));
+    if (!isNaN(value)) {
+        const result = searchNode(tree.root, value);
+        if (result) {
+            document.getElementById('result').textContent = `Nodo ${value} encontrado.`;
+        } else {
+            document.getElementById('result').textContent = `Nodo ${value} no encontrado.`;
+        }
+    } else {
+        document.getElementById('result').textContent = 'Ingrese un valor válido.';
+    }
+});
+
+// Función para buscar un nodo en el árbol
+function searchNode(node, value) {
+    if (node === null) return null; // Si el nodo es null, no hay nada que buscar
+
+    if (node.data === value) return node; // Si encontramos el valor, retornamos el nodo
+
+    // Recorrer los hijos recursivamente para buscar el valor
+    for (let child of node.children) {
+        const result = searchNode(child, value);
+        if (result) return result; // Si encontramos el nodo en alguno de los hijos, lo retornamos
+    }
+
+    return null; // Si no encontramos el nodo, retornamos null
+}

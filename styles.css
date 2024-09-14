@@ -57,7 +57,7 @@ button {
 .node text {
     font: 17px sans-serif;
     fill: white;
-    font-weight: bold;
+    /* font-weight: bold; */
     /* Estilo de texto en negrita */
 }
 
